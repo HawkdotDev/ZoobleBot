@@ -1,0 +1,29 @@
+{
+  "server": "Undercity",
+  "serverId": "623019516598681631",
+  "channelId": "1214160173170692106",
+  "channelData": {
+    "type": 0,
+    "guild": "623019516598681631",
+    "guildId": "623019516598681631",
+    "permissionOverwrites": [
+      "691190603194564619",
+      "691191602479104071",
+      "756409632095993907",
+      "623019516598681631"
+    ],
+    "messages": [],
+    "threads": [],
+    "nsfw": false,
+    "flags": 0,
+    "id": "1214160173170692106",
+    "name": "bot-lab",
+    "rawPosition": 11,
+    "parentId": "1214160019017441310",
+    "topic": null,
+    "lastMessageId": "1214834792005115964",
+    "defaultThreadRateLimitPerUser": null,
+    "rateLimitPerUser": 0,
+    "createdTimestamp": 1709548743289
+  }
+}
