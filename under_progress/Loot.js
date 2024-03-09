@@ -212,9 +212,13 @@ class LootSystem {
   }
 }
 
-const lootSystem = new LootSystem();
-
-console.log(lootSystem.simulateLootDrops(10, 42, 10));
-
-// Export the LootSystem class instance (optional, can be instantiated as needed)
+// Export the LootSystem class instance (can be instantiated as needed)
 // module.exports = new LootSystem();
+
+const lootSystem = new LootSystem();
+console.log(lootSystem.simulateLootDrops(
+  10, // number of drops
+  42, // player level
+  10  // luck level
+));
+
