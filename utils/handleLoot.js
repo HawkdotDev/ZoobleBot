@@ -1,3 +1,4 @@
+//handleLoot.js
 class LootSystem {
   constructor() {
     // Define loot tiers with unlock levels

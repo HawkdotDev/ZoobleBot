@@ -8,12 +8,12 @@
 **In Progress:**
 
 - [ ] Add an inventory system (groundwork)
+- [ ] Add a level system (groundwork)
 
 **Next Steps:**
 
-- [ ] Add a battle system (groundwork)
 - [ ] Add a quest system (groundwork)
-- [ ] Add a level system (groundwork)
+- [ ] Add a battle system (groundwork)
 
 **Monster Design and Implementation:**
 
