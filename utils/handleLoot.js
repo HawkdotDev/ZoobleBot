@@ -1,7 +1,5 @@
-//handleLoot.js
 class LootSystem {
   constructor() {
-    // Define loot tiers with unlock levels
     this.tiers = [
       { name: "Common", unlockLevel: 5 },
       { name: "Uncommon", unlockLevel: 10 },
@@ -12,132 +10,217 @@ class LootSystem {
       { name: "Fabled", unlockLevel: 35 },
     ];
 
-    // Create initial loot tables for each tier with default weights and items
     this.lootTables = {
-      Common: {
-        weight: 45.0,
+      Scrap: {
         items: [
-          { item: "Potion", weight: 8.0 },
-          { item: "Basic Sword", weight: 6.0 },
-          { item: "Leather Armor", weight: 4.0 },
+          { item: "Rough Gem", probability: 0.8 },
+          { item: "Rusty Dagger", probability: 0.15 },
+          { item: "Rusty Armor", probability: 0.05 },
         ],
+        probability: 0,
+      },
+      Common: {
+        items: [
+          { item: "Potion", probability: 0.5 },
+          { item: "Basic Sword", probability: 0.35 },
+          { item: "Leather Armor", probability: 0.1 },
+          { item: "Basic Shield", probability: 0.05 },
+        ],
+        probability: 0.45,
       },
       Uncommon: {
-        weight: 23.0,
         items: [
-          { item: "Greater Potion", weight: 5.0 },
-          { item: "Chainmail Armor", weight: 4.0 },
-          { item: "Steel Sword", weight: 3.0 },
-          { item: "Uncommon Gem", weight: 2.0 },
+          { item: "Iron Sword", probability: 0.7 },
+          { item: "Chainmail Armor", probability: 0.2 },
+          { item: "Minor Mana Potion", probability: 0.1 },
         ],
+        probability: 0.3,
       },
       Rare: {
-        weight: 11.0,
         items: [
-          { item: "Elixir", weight: 2.0 },
-          { item: "Enchanted Dagger", weight: 1.0 },
-          { item: "Plate Armor", weight: 1.0 },
+          { item: "Steel Sword", probability: 0.6 },
+          { item: "Plate Armor", probability: 0.3 },
+          { item: "Major Healing Potion", probability: 0.1 },
         ],
+        probability: 0.15,
       },
       Epic: {
-        weight: 5.0,
         items: [
-          { item: "Legendary Potion", weight: 1.0 },
-          { item: "Excalibur", weight: 1.0 },
-          { item: "Dragonhide Armor", weight: 1.0 },
+          { item: "Enchanted Sword", probability: 0.7 },
+          { item: "Dragonhide Armor", probability: 0.2 },
+          { item: "Elixir of Power", probability: 0.1 },
         ],
+        probability: 0.05,
       },
       Mythic: {
-        weight: 2.0,
         items: [
-          { item: "Mythic Elixir", weight: 1.0 },
-          { item: "Mythic Sword", weight: 1.0 },
-          { item: "Mythic Shield", weight: 1.0 },
+          { item: "GodSlayer Sword", probability: 0.6 },
+          { item: "Titanforged Armor", probability: 0.3 },
+          { item: "Phoenix Down", probability: 0.1 },
         ],
+        probability: 0.01,
       },
       Legendary: {
-        weight: 0.1,
         items: [
-          { item: "Artifact", weight: 1.0 },
-          { item: "Infinity Blade", weight: 1.0 },
-          { item: "Godly Armor", weight: 1.0 },
+          { item: "Mjolnir", probability: 0.5 },
+          { item: "Infinity Gauntlet", probability: 0.5 },
         ],
+        probability: 0.005,
       },
       Fabled: {
-        weight: 0.005,
-        items: [
-          { item: "Fabled Potion", weight: 2.0 },
-          { item: "Fabled Sword", weight: 0.5 },
-          { item: "Fabled Shield", weight: 0.5 },
-        ],
+        items: [{ item: "One Ring", probability: 1.0 }],
+        probability: 0.001,
       },
     };
 
-    // Keep track of unlocked tiers
     this.unlockedTiers = [];
   }
 
-  getLoot(playerLevel) {
-    // Determine the rarity of the loot based on weights and player level
+  getDrop(playerLevel, luck) {
+    // Determine the probable rarities of the loot based on player level
     const unlockedTiers = this.tiers.filter(
       (tier) => playerLevel >= tier.unlockLevel
     );
 
-    // Check if there are unlocked tiers
-    if (unlockedTiers.length > 0) {
-      // Choose a loot tier from unlocked tiers with a preference for lower rarities
-      const lootTierIndex = Math.floor(Math.random() * unlockedTiers.length);
-      const lootTier = unlockedTiers[lootTierIndex];
-
-      // Use the chosen loot table
-      const lootTable = this.lootTables[lootTier.name];
-
-      // Utilize a corrected weighted random selection algorithm for items
-      const chosenItem = this.weightedRandomSelection(lootTable.items);
-
-      const dropMessage = `You obtained a ${lootTier.name} item: ${chosenItem.item}!`
-
-      // Log the obtained item and its rarity
-      console.log(dropMessage);
-      return dropMessage;
+    if (playerLevel < 5 ) {
+      const lootTable = this.lootTables.Scrap;
+      const dropItem = {"Rarity" : "Scrap", "Item" : this.weightedRandomSelection(lootTable["items"])};
+      return dropItem;
     } else {
-      // If no tiers are unlocked, use the default tier (Common)
-      const lootTable = this.lootTables.Common;
-      const chosenItem = this.weightedRandomSelection(lootTable.items);
+      const adjustedProbabilities = this.adjustTierProbabilities(luck); // Adjust probabilities based on luck (0 to 10)
+      const raritySelectionPool = this.filterLootProbabilities(
+        adjustedProbabilities,
+        unlockedTiers
+      );
 
-      const dropMessage = `You obtained a ${lootTable.name} item: ${chosenItem.item}!`
+      console.log(raritySelectionPool);
 
-      // Log the obtained item and its rarity
-      console.log(dropMessage);
-      return dropMessage;
+      // Choose a loot tier from unlocked tiers with adjusted probabilities
+      const lootTierIndex = this.weightedRandomSelection(raritySelectionPool);
+      const lootTable = this.lootTables[lootTierIndex];
+
+      const dropItem = {"Rarity" : lootTierIndex, "Item" : this.weightedRandomSelection(lootTable["items"])};
+      return dropItem;
     }
   }
 
   weightedRandomSelection(items) {
-    const totalWeight = items.reduce((acc, { weight }) => acc + weight, 0);
-    let randomValue = Math.random() * totalWeight;
+    const randomValue = Math.random();
+    let cumulativeProbability = 0;
 
-    // The previous code
-    for (const { item, weight } of items) {
-      randomValue -= weight;
-      if (randomValue <= 0) {
-        return { item, weight };
+    try {
+      for (const { item, probability } of items) {
+        // console.log(items, item, probability)
+
+        cumulativeProbability += probability;
+        if (randomValue <= cumulativeProbability) {
+          return item;
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  adjustTierProbabilities(luck) {
+    const luckFactor = luck / 10; // Normalize luck value (0 to 1)
+    const adjustedProbabilities = {};
+
+    for (const [tierName, lootTable] of Object.entries(this.lootTables)) {
+      const baseProbability = lootTable.probability;
+      let adjustedProbability = baseProbability;
+
+      // Increase probability based on rarity and luck factor
+      switch (tierName) {
+        case "Scrap":
+          adjustedProbability += baseProbability * luckFactor * 0; // scrap stays constant
+          break;
+        case "Common":
+          adjustedProbability += baseProbability * luckFactor * 0.05; // 5% increase for Common
+          break;
+        case "Uncommon":
+          adjustedProbability += baseProbability * luckFactor * 0.075; // 7% increase for Uncommon
+          break;
+        case "Rare":
+          adjustedProbability += baseProbability * luckFactor * 0.1125; // 10% increase for Rare
+          break;
+        case "Epic":
+          adjustedProbability += baseProbability * luckFactor * 0.16875; // 15% increase for Epic
+          break;
+        case "Mythic":
+          adjustedProbability += baseProbability * luckFactor * 0.253125; // 20% increase for Mythic
+          break;
+        case "Legendary":
+          adjustedProbability += baseProbability * luckFactor * 0.3796875; // 25% increase for Legendary
+          break;
+        case "Fabled":
+          adjustedProbability += baseProbability * luckFactor * 0.56953125; // 0.1% increase for Fabled (adjust as needed)
+          break;
+        default:
+          adjustedProbability = baseProbability; // No adjustment for unknown tiers
+      }
+
+      adjustedProbabilities[tierName] = adjustedProbability;
+    }
+
+    // Normalize adjusted probabilities to ensure they sum to 1
+    const totalProbability = Object.values(adjustedProbabilities).reduce(
+      (acc, p) => acc + p,
+      0
+    );
+    for (const tierName in adjustedProbabilities) {
+      adjustedProbabilities[tierName] /= totalProbability;
+    }
+
+    return adjustedProbabilities;
+  }
+
+  filterLootProbabilities(rarityProbabilities, unlockedRarities) {
+    const filteredLootTables = [];
+
+    // Calculate the total probability of unlocked rarities
+    const totalProbability = unlockedRarities.reduce((acc, rarity) => {
+      const rarityName = rarity.name;
+      if (rarityProbabilities.hasOwnProperty(rarityName)) {
+        acc += rarityProbabilities[rarityName];
+      }
+      return acc;
+    }, 0);
+
+    // Normalize probabilities for each unlocked rarity
+    for (const unlockedRarity of unlockedRarities) {
+      const rarityName = unlockedRarity.name;
+      if (rarityProbabilities.hasOwnProperty(rarityName)) {
+        const normalizedProbability =
+          rarityProbabilities[rarityName] / totalProbability;
+        filteredLootTables.push({
+          item: rarityName,
+          probability: normalizedProbability,
+        });
       }
     }
 
-    // Fallback, in case weights are not defined correctly
-    return items[items.length - 1];
+    return filteredLootTables;
   }
 
-  simulateLootDrops = (numDrops, playerLevel) => {
-    const Loot = []
+  getLoot(numDrops, playerLevel, luck) {
+    const lootDrops = [];
     for (let i = 0; i < numDrops; i++) {
-      const lootSystem = new LootSystem();
-      Loot.push(`\n${lootSystem.getLoot(playerLevel)}`);
+      const foundItem = this.getDrop(playerLevel, luck);
+      lootDrops.push(`you found a ${foundItem.Rarity} item : ${foundItem.Item}`); // Use existing LootSystem instance
     }
-    return JSON.parse(JSON.stringify(Loot))
-  };
+    return lootDrops;
+  }
 }
 
-// Export the LootSystem class instance
+// Export the LootSystem class instance (can be instantiated as needed)
 module.exports = new LootSystem();
+
+// const lootSystem = new LootSystem();
+// console.log(
+//   lootSystem.getLoot(
+//     7, // number of drops
+//     3, // player level
+//     10 // luck level
+//   )
+// );
