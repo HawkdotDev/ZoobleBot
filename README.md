@@ -37,7 +37,7 @@ Feel free to contribute to the development of ZoobleBot! If you have ideas for n
 
 ## 📄 License
 
-ZoobleBot is available as open source under the terms of the [Apache 2.0 license](<./LICENSE>)
+ZoobleBot is available as open source under the terms of the [license](<./LICENSE>)
 
 ---
 
