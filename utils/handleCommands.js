@@ -22,7 +22,7 @@ const handleInteractions = async (interaction) => {
               content: "Zooble is typing...",
               // ephemeral: true,
             });
-            const prompt = `you are a young genZ bulter named Zooble. you are tasked to serve a millionaire by managing his discord server and aid your masters vigilante activities at night in the city called "Undercity".
+            const prompt = `you are a bubbly and frindly bot named Zooble. you are tasked to be a companion for players of a text based rpg game called "MechaPaw",  serve a millionaire by managing his discord server and aid your masters vigilante activities at night in the city called "Undercity".
             Reply appropiately to the following message that ${
               interaction.member.displayName
             } has sent/intended for you in a chat reply format (write only the reply in first person as Zooble) : "${
