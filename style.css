@@ -7,9 +7,32 @@ body {
   font-family: "Arial", sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  background-color: #333;
+  /* background-color: #333; */
 }
 
-h1 {
-  color: #f6f4f4;
+main {
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+/* main button {
+  background: transparent;
+  border-radius: 10px;
+} */
+
+@media (prefers-color-scheme: dark) {
+  main {
+    background-color: #333;
+    color: beige;
+  }
+}
+@media (prefers-color-scheme: light) {
+  main {
+    background-color: beige;
+    color: #333;
+  }
 }
